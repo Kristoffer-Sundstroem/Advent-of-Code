@@ -9,7 +9,7 @@ library(dplyr)
 First, lets set retrieve the dataset from my GitHub repo and transform it:
 ```{r}
 # Url to the input data:
-url <- "https://raw.githubusercontent.com/Kristoffer-Sundstroem/AoC2024/refs/heads/main/Inputs/Day1.txt"
+url <- "https://raw.githubusercontent.com/Kristoffer-Sundstroem/Advent-of-Code/refs/heads/main/2024/Inputs/Day1.txt"
 
 # Fetching and transforming the data to a data frame:
 data <- curl_fetch_memory(url) %>%
