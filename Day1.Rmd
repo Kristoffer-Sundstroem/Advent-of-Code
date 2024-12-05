@@ -1,0 +1,55 @@
+Install and load necessary packages:
+```{r}
+library(curl)
+library(dplyr)
+```
+
+**************************** PART 1 **************************************
+
+First, lets set retrieve the dataset from my GitHub repo and transform it:
+```{r}
+# Url to the input data:
+url <- "https://raw.githubusercontent.com/Kristoffer-Sundstroem/AoC2024/refs/heads/main/Inputs/Day1.txt"
+
+# Fetching and transforming the data to a data frame:
+data <- curl_fetch_memory(url) %>%
+  {rawToChar(.$content)} %>%
+  textConnection() %>%
+  readLines() %>%
+  read.table(text = .,
+             header = FALSE)
+```
+
+
+Now lets sort the two vectors into two indenpendent, and sorted, integer 
+vectors:
+```{r}
+x1 <- data$V1[order(data$V1)]
+x2 <- data$V2[order(data$V2)]
+```
+
+Lets calculate and print the differences between each of these, in absolute 
+values, and sum it up: 
+```{r}
+Answer1 <- sum(abs(x1 - x2))
+print(Answer1)
+```
+
+**************************** PART 2 **************************************
+
+Now lets create a new column, named "CountV1", in which each value in column  is 
+multiplied by the number of times it shows up in the second column:
+```{r}
+data <- data %>%
+  mutate(CountV1 = sapply(V1, function(x) sum(V2 == x)))
+```
+
+Now lets calculate and print the answer for part 2 by multiplying the values in 
+column 1 by the new count column and sum the values togheter:
+```{r}
+Answer2 <- data %>%
+  mutate(Similarity_Score = V1 * CountV1) %>%
+  {sum(data$Similarity_Score)} %>%
+  print()
+
+```
