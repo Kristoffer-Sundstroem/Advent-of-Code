@@ -49,7 +49,8 @@ column 1 by the new count column and sum the values togheter:
 ```{r}
 Answer2 <- data %>%
   mutate(Similarity_Score = V1 * CountV1) %>%
-  {sum(data$Similarity_Score)} %>%
+  pull(Similarity_Score)%>%
+  sum(data$Similarity_Score) %>%
   print()
 
 ```
