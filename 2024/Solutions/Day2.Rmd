@@ -1,0 +1,33 @@
+---
+title: "Day2"
+author: "Kristoffer Sundström"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+Install and load important packages:
+```{r}
+library(tidyverse)
+```
+
+
+**************************** PART 1 **************************************
+
+Import the dataset:
+```{r}
+data <- read.table("~/GitHub/Advent-of-Code/2024/Inputs/Day2.txt", # Reads the table from the GitHub directory.
+           header = FALSE, # Indicates that the data has no headers.
+           sep = " ", # Data is separated by a blank space.
+           fill = NA) # If no value is present, report it as NA.
+```
+
+Now lets try to check whether the row is "safe" or "unsafe":
+```{r}
+data <- data %>%
+  mutate(across())
+```
+
+```{r}
+data <- data %>%
+  mutate(safe_report = abs(V1 - V2) <= 3)
+```
