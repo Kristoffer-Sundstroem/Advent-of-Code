@@ -21,7 +21,7 @@ data <- curl_fetch_memory(url) %>%
 ```
 
 
-Now lets sort the two vectors into two indenpendent, and sorted, integer 
+Now lets sort the two vectors into two independent, and sorted, integer 
 vectors:
 ```{r}
 x1 <- data$V1[order(data$V1)]
