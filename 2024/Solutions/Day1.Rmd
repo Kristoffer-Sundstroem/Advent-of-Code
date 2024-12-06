@@ -1,6 +1,5 @@
 Install and load necessary packages:
 ```{r}
-library(curl)
 library(dplyr)
 ```
 
@@ -8,16 +7,8 @@ library(dplyr)
 
 First, lets set retrieve the dataset from my GitHub repo and transform it:
 ```{r}
-# Url to the input data:
-url <- "https://raw.githubusercontent.com/Kristoffer-Sundstroem/Advent-of-Code/refs/heads/main/2024/Inputs/Day1.txt"
-
-# Fetching and transforming the data to a data frame:
-data <- curl_fetch_memory(url) %>%
-  {rawToChar(.$content)} %>%
-  textConnection() %>%
-  readLines() %>%
-  read.table(text = .,
-             header = FALSE)
+data <- read.table("~/GitHub/Advent-of-Code/2024/Inputs/Day1.txt",
+           header = FALSE)
 ```
 
 
