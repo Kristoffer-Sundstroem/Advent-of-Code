@@ -23,11 +23,6 @@ data <- read.table("~/GitHub/Advent-of-Code/2024/Inputs/Day2.txt", # Reads the t
 
 Now lets try to check whether the row is "safe" or "unsafe":
 ```{r}
-data <- data %>%
-  mutate(across())
-```
-
-```{r}
-data <- data %>%
-  mutate(safe_report = abs(V1 - V2) <= 3)
+data %>%
+  mutate(safe_report1 = abs(V1 - V2) <= 3)
 ```
