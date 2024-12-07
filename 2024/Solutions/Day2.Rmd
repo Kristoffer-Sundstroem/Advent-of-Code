@@ -21,8 +21,29 @@ data <- read.table("~/GitHub/Advent-of-Code/2024/Inputs/Day2.txt", # Reads the t
            fill = NA) # If no value is present, report it as NA.
 ```
 
-Now lets try to check whether the row is "safe" or "unsafe":
+Now lets try to check whether the row is has a positive trend or negative trend:
 ```{r}
-data %>%
-  mutate(safe_report1 = abs(V1 - V2) <= 3)
+data <- data %>%
+  mutate(diff1_pos = (V2 - V1) <= 3 & (V2 - V1) > 0) %>%
+  mutate(diff2_pos = (V3 - V2) <= 3 & (V3 - V2) > 0) %>%
+  mutate(diff3_pos = (V4 - V3) <= 3 & (V4 - V3) > 0) %>%
+  mutate(diff4_pos = (V5 - V4) <= 3 & (V5 - V4) > 0) %>%
+  mutate(diff5_pos = (V6 - V5) <= 3 & (V6 - V5) > 0) %>%
+  mutate(diff6_pos = (V7 - V6) <= 3 & (V7 - V6) > 0) %>%
+  mutate(diff7_pos = (V7 - V8) <= 3 & (V8 - V7) > 0) %>%
+  mutate(diff1_neg = (V1 - V2) <= 3 & (V1 - V2) > 0) %>%
+  mutate(diff2_neg = (V2 - V3) <= 3 & (V2 - V3) > 0) %>%
+  mutate(diff3_neg = (V3 - V4) <= 3 & (V3 - V4) > 0) %>%
+  mutate(diff4_neg = (V4 - V5) <= 3 & (V4 - V5) > 0) %>%
+  mutate(diff5_neg = (V5 - V6) <= 3 & (V5 - V6) > 0) %>%
+  mutate(diff6_neg = (V6 - V7) <= 3 & (V6 - V7) > 0) %>%
+  mutate(diff7_neg = (V7 - V8) <= 3 & (V7 - V8) > 0)
 ```
+
+Now lets check if all columns for either diff_pos or diff_neg is only TRUE,
+this would indicate a safe report:
+```{r}
+data <- data %>%
+  ifelse(is.true(diff_pos*) | is.true(diff_neg*) == TRUE, 1, 0)
+```
+
