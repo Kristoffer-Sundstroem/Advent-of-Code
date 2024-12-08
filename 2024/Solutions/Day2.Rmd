@@ -11,7 +11,7 @@ library(tidyverse)
 ```
 
 
-**************************** PART 1 **************************************
+** PART 1 **
 
 Import the dataset:
 ```{r}
@@ -23,27 +23,105 @@ data <- read.table("~/GitHub/Advent-of-Code/2024/Inputs/Day2.txt", # Reads the t
 
 Now lets try to check whether the row is has a positive trend or negative trend:
 ```{r}
-data <- data %>%
-  mutate(diff1_pos = (V2 - V1) <= 3 & (V2 - V1) > 0) %>%
-  mutate(diff2_pos = (V3 - V2) <= 3 & (V3 - V2) > 0) %>%
-  mutate(diff3_pos = (V4 - V3) <= 3 & (V4 - V3) > 0) %>%
-  mutate(diff4_pos = (V5 - V4) <= 3 & (V5 - V4) > 0) %>%
-  mutate(diff5_pos = (V6 - V5) <= 3 & (V6 - V5) > 0) %>%
-  mutate(diff6_pos = (V7 - V6) <= 3 & (V7 - V6) > 0) %>%
-  mutate(diff7_pos = (V7 - V8) <= 3 & (V8 - V7) > 0) %>%
-  mutate(diff1_neg = (V1 - V2) <= 3 & (V1 - V2) > 0) %>%
-  mutate(diff2_neg = (V2 - V3) <= 3 & (V2 - V3) > 0) %>%
-  mutate(diff3_neg = (V3 - V4) <= 3 & (V3 - V4) > 0) %>%
-  mutate(diff4_neg = (V4 - V5) <= 3 & (V4 - V5) > 0) %>%
-  mutate(diff5_neg = (V5 - V6) <= 3 & (V5 - V6) > 0) %>%
-  mutate(diff6_neg = (V6 - V7) <= 3 & (V6 - V7) > 0) %>%
-  mutate(diff7_neg = (V7 - V8) <= 3 & (V7 - V8) > 0)
+for (i in 1:7) {
+  # Positive trend called "diffpos":
+  data[[paste0("diffpos", i)]] <- (data[[paste0("V", i+1)]] - data[[paste0("V", i)]]) <= 3 &
+                                        (data[[paste0("V", i+1)]] - data[[paste0("V", i)]]) > 0
+
+  # Negative trend called "diffneg":
+  data[[paste0("diffneg", i)]] <- (data[[paste0("V", i)]] - data[[paste0("V", i+1)]]) <= 3 &
+                                        (data[[paste0("V", i)]] - data[[paste0("V", i+1)]]) > 0
+}
 ```
 
 Now lets check if all columns for either diff_pos or diff_neg is only TRUE,
 this would indicate a safe report:
 ```{r}
+# Check if all values in columns starting with "diffpos" are TRUE for each row:
 data <- data %>%
-  ifelse(is.true(diff_pos*) | is.true(diff_neg*) == TRUE, 1, 0)
+  mutate(
+    AllTruePos = apply(data[, grepl("^diffpos", names(data))], 1, function(row) {
+      all(row == TRUE, na.rm = TRUE)  # Checks if all values in the diffpos columns are TRUE, ignoring NA.
+    }),
+    
+    # Check if all values in columns starting with "diffneg" are TRUE for each row
+    AllTrueNeg = apply(data[, grepl("^diffneg", names(data))], 1, function(row) {
+      all(row == TRUE, na.rm = TRUE)  # Checks if all values in the diffneg columns are TRUE, ignoring NA.
+    })
+  )
+
+# Convert TRUE/FALSE to 1/0 if needed:
+data$AllTruePos <- ifelse(data$AllTruePos, 1, 0)
+data$AllTrueNeg <- ifelse(data$AllTrueNeg, 1, 0)
+
+# Calculate the sum of AllTruePos and AllTrueNeg:
+Answer1 <- sum(data$AllTruePos) + sum(data$AllTrueNeg)
+
+Answer1
+```
+
+** Part 2 **
+First lets find the cases in which there is only one faulting report:
+```{r}
+# Check the number of FALSE observations in columns starting with "diffpos":
+data <- data %>%
+  mutate(
+    PosF = apply(data[, grepl("^diffpos", names(data))], 1, function(row) {
+      sum(row == FALSE, na.rm = TRUE)
+    }),
+    
+    # Check the number of FALSE observations in columns starting with "diffpos":
+    NegF = apply(data[, grepl("^diffneg", names(data))], 1, function(row) {
+      sum(row == FALSE, na.rm = TRUE)
+    })
+  )
+
+# Convert the values to SAFEpos and SAFEneg IF AllTruePos and AllTrueNeg are TRUE or if PosF or NegF are equal to 1.
+data$SAFEpos <- ifelse(data$AllTruePos == TRUE | data$PosF == 1, 1, 0)
+data$SAFEneg <- ifelse(data$AllTrueNeg == TRUE | data$NegF == 1, 1, 0)
+```
+
+Now lets remove the FALSE observations from these cases and report them as NA:
+```{r}
+# Filter and get new dataset for Positive trends with 1 failure:
+dataPos <- data %>%
+  filter(SAFEpos == 1)
+
+# Filter and get new dataset for Negative trends with 1 failure:  
+dataNeg <- data %>%
+  filter(SAFEneg == 1)
+
+# Now lets transform all FALSE reports to NAs for both new datasets:
+dataPos <- dataPos %>%
+  mutate(across(everything(), ~ ifelse(. == FALSE, NA, .)))
+
+dataNeg <- dataNeg %>%
+  mutate(across(everything(), ~ ifelse(. == FALSE, NA, .)))
+```
+
+Now lets rerun the code from part 1 after removing the FALSE obsvervations:
+```{r}
+# Check if all values in columns starting with "diffpos" are TRUE for each row given new datasets:
+dataPos <- dataPos %>%
+  mutate(
+    AllTruePos2 = apply(dataPos[, grepl("^diffpos", names(dataPos))], 1, function(row) {
+      all(row == TRUE, na.rm = TRUE)  # Checks if all values in the diffpos columns are TRUE, ignoring NA.
+    }))
+    
+# Check if all values in columns starting with "diffneg" are TRUE for each row given new datasets:
+dataNeg <- dataNeg %>%
+  mutate(
+    AllTrueNeg2 = apply(dataNeg[, grepl("^diffneg", names(dataNeg))], 1, function(row) {
+      all(row == TRUE, na.rm = TRUE)  # Checks if all values in the diffneg columns are TRUE, ignoring NA.
+    }))
+
+# Convert TRUE/FALSE to 1/0 if needed:
+dataPos$AllTruePos2 <- ifelse(dataPos$AllTruePos2, 1, 0)
+dataNeg$AllTrueNeg2 <- ifelse(dataNeg$AllTrueNeg2, 1, 0)
+
+# Calculate the sum of AllTruePos and AllTrueNeg:
+Answer2 <- sum(dataPos$AllTruePos2) + sum(dataNeg$AllTrueNeg2)
+
+Answer2
 ```
 
