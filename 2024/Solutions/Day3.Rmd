@@ -1,0 +1,41 @@
+---
+title: "Day3"
+author: "Kristoffer Sundström"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+Install and load important packages:
+```{r}
+library(tidyverse)
+```
+
+
+** PART 1 **
+
+Import the dataset:
+```{r}
+data <- read_lines("~/GitHub/Advent-of-Code/2024/Inputs/Day3.txt")
+```
+
+Find the certain numbers that are enclosed by mul() and separated by a ,:
+```{r}
+data <- data %>%
+  str_match_all("mul\\((\\d+),(\\d+)\\)") %>% # Match together all the strings that matches the specified condition.
+  map(~ .[, 2:3]) %>% # Extract the numbers.
+  unlist() %>%
+  as.numeric()
+
+# Now pair up these values given from the code above and make them numeric:
+
+# create a dataframe:
+data <- data.frame(vector1, vector2)
+
+# Calculate the answer:
+data$vector3 = data$vector1 * data$vector2
+Answer1 <- sum(data$vector3)
+
+# Display the answer:
+Answer1
+```
+
