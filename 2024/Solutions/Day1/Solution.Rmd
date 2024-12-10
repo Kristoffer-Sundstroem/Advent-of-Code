@@ -11,7 +11,7 @@ library(tidyverse) # Imports and loads the package tidyverse.
 ```
 
 
-**************************** PART 1 **************************************
+** PART 1 **
 
 First, lets set retrieve the dataset from my GitHub repo and transform it:
 ```{r}
@@ -34,7 +34,7 @@ Answer1 <- sum(abs(x1 - x2)) # Sums the absolute values between x1 and x2.
 print(Answer1) # Prints answer for part 1 of day 1.
 ```
 
-**************************** PART 2 **************************************
+** PART 2 **
 
 Now lets create a new column, named "CountV1", in which each value in column  is 
 multiplied by the number of times it shows up in the second column:
