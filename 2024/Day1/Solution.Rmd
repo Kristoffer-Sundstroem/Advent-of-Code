@@ -30,7 +30,7 @@ x2 <- data$V2[order(data$V2)] # Vector 2.
 Lets calculate and print the differences between each of these, in absolute 
 values, and sum it up: 
 ```{r}
-Answer1 <- sum(abs(x1 - x2)) # Sums the absolute values between x1 and x2.
+
 print(Answer1) # Prints answer for part 1 of day 1.
 ```
 
