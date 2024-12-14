@@ -16,10 +16,12 @@ SafeReports <- function(report){
   lapply(d, function(x) all(x > 0 & x <= 3) || all(x >= -3 & x < 0))
 }
 
-sum(unlist(SafeReports(report)) == TRUE) # This code reports the number of reports that are safe.
+sum(unlist(SafeReports(report)) == TRUE) # This reports the number of reports that are safe (TRUE).
 
 ## Part 2 ##
 
 SafeReports2 <- function(report){
   
 }
+
+sum(unlist(SafeReports2(report)) == TRUE) # This reports the number of reports that are safe (TRUE).
