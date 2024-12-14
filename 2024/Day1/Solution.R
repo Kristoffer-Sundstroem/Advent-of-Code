@@ -1,4 +1,5 @@
-require(tidyverse) # Install and load
+# Load packages:
+require(tidyverse) 
 
 data <- read.table("~/GitHub/Advent-of-Code/2024/Day1/input.txt",
                    header = FALSE) # Reads the table from the GitHub directory.
