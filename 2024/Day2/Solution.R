@@ -20,8 +20,27 @@ sum(unlist(SafeReports(report)) == TRUE) # This reports the number of reports th
 
 ## Part 2 ##
 
-SafeReports2 <- function(report){
+PadReport <- function(report) {
+  d <- lapply(report, diff) # Checks the report for differences in each element and saves it as "d".
+  result <- lapply(seq_along(d), function(i) { # Sequences along the elements.
+    negative_indices <- which(d[[i]] < 0) # Identifies the negative values.
+    positive_indices <- which(d[[i]] > 0) # Identifies the positive values.
+    equal_indices <- which(d[[i]] == 0)  # Identifies 0 values.
+    if (length(negative_indices) == 1) {
+      report[[i]] <- report[[i]][-(negative_indices+1)] # Removes "negative_indicies" (if there is only one of them).
+    }
+    if (length(positive_indices) == 1) {
+      report[[i]] <- report[[i]][-(positive_indices+1)] # Removes "positive_indicies" (if there is only one of them).
+    }
+    if (length(equal_indices) == 1) {
+      report[[i]] <- report[[i]][-(equal_indices-1)] # Removes "positive_indicies" (if there is only one of them).
+    }
+    return(report[[i]]) # Returns the specific value in the report.
+  })
   
+  return(result) # Returns the result taht has been saved.
 }
 
-sum(unlist(SafeReports2(report)) == TRUE) # This reports the number of reports that are safe (TRUE).
+PaddedReport <- PadReport(report) # Pad the report given the new guidelines and save it as PaddedReport.
+
+sum(unlist(SafeReports(PaddedReport)) == TRUE) # This reports the number of reports that are safe (TRUE) with the new PaddedReport.
